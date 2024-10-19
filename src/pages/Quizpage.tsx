@@ -273,9 +273,9 @@ export default function ExamQuestionPage() {
           <div className="border-b">
             <nav className="-mb-px flex space-x-6 px-4 sm:px-6 lg:px-8">
               <Button variant="link" className="text-orange-500 border-b-2 border-orange-500 pb-2">Exam</Button>
-              <Button variant="link">Lorem</Button>
-              <Button variant="link">Lorem</Button>
-              <Button variant="link">Lorem</Button>
+              <Button variant="link">option1</Button>
+              <Button variant="link">option2</Button>
+              <Button variant="link">option3</Button>
             </nav>
           </div>
         </header>

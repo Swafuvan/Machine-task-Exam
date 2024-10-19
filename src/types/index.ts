@@ -10,3 +10,8 @@ export interface Questions {
 export interface SelectedAnswer {
     [questionId: string]: string;
 }
+
+export interface categoryChart {
+    name: string,
+    value: number
+  }

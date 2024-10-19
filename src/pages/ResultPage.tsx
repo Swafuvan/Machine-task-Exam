@@ -9,13 +9,10 @@ import { LayoutDashboard, Search, Inbox, BarChart2, Settings, Menu, MessageSquar
 import { getQuestions } from '@/source/Data'
 import Image from 'next/image'
 import profileImg from '../app/assets/istockphoto.jpg'
-import { Questions } from '@/types'
+import { categoryChart, Questions } from '@/types'
 import { useRouter } from 'next/navigation'
 
-interface categoryChart {
-  name: string,
-  value: number
-}
+
 const categories = [
   { name: 'Geography', value: 25 },
   { name: 'Science', value: 20 },
@@ -26,62 +23,47 @@ const categories = [
 const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
 
 export default function AssessmentResults() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [answeredQuestion, setAnsweredQuestion] = useState<Questions[]>([]);
-  const [categoryScores, setCategoryScores] = useState<categoryChart[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [chartResult,setChartResult] = useState<categoryChart[]>([]);
   const router = useRouter()
 
   useEffect(() => {
     const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
-    if (!answers) {
-      router.push('/')
+    console.log(answers)
+    if (Object.keys(answers).length === 0) {
+      router.push('/'); 
+      return;
     }
     const fetchedQuestions = getQuestions();
     fetchedQuestions.then(questions => {
       const scores = calculateCategoryScores(answers, questions);
-      setCategoryScores(scores);
-      setAnsweredQuestion(answers);
+      setChartResult(scores)
     });
   }, []);
 
   const calculateCategoryScores = (answers: { [key: string]: string }, questions: Questions[]) => {
-    // Initialize category counts
-    const categoryCount = categories.reduce((acc, category) => {
-      acc[category.name] = { total: 0, correct: 0 };
-      return acc;
-    }, {} as { [key: string]: { total: number; correct: number } });
-  
-    // Loop through each question and compare with selected answers
-    questions.forEach((question) => {
-      const selectedAnswer = answers[`q${question.id}`]; // Get the answer by question ID
-      console.log(`Selected Answer for q${question.id}:`, selectedAnswer); // Debugging selected answers
-      console.log(`Correct Answer for q${question.id}:`, question.answer.option); // Debugging correct answer
-  
-      if (selectedAnswer) {
-        const category = question.category;
-        console.log("Question Category:", category); // Debugging category
-  
-        categoryCount[category].total += 1;
-  
-        if (question.answer.option === selectedAnswer) {
-          categoryCount[category].correct += 1;
+
+    const chartResult = [
+      { name: 'Geography', value: 0 },
+      { name: 'Science', value: 0 },
+      { name: 'History', value: 0 },
+      { name: 'Mathematics', value: 0 },
+    ];
+
+
+    for(const data in answers){
+      const question = questions.find(q => q.id === data);
+      if(question?.answer.option === answers[data] ){
+        const data = chartResult.find((item) => item.name === question.category)
+        if(data){
+          data.value +=1
         }
       }
-    });
-  
-    // Log final category counts
-    console.log("Final Category Counts:", categoryCount);
-  
-    // Map the category results to a percentage score
-    return categories.map((category) => {
-      const { correct, total } = categoryCount[category.name];
-      return {
-        name: category.name,
-        value: total > 0 ? (correct / total) * 100 : 0, // Calculate percentage
-      };
-    });
+    }
+    return chartResult
+
   };
-  
+
 
   const completedExam = () => {
     localStorage.clear();
@@ -199,16 +181,16 @@ export default function AssessmentResults() {
 
                       <PieChart>
                         <Pie
-                          data={categories}
-                          cx="33%"
-                          cy="40%"
+                          data={chartResult}
+                          cx="35%"
+                          cy="45%"
                           labelLine={false}
                           outerRadius={80}
                           fill="#8884d8"
                           dataKey="value"
                           label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                         >
-                          {categories.map((entry, index) => (
+                          {chartResult.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
