@@ -100,8 +100,6 @@ If you have any questions or need further information, feel free to reach out:
 
 - **Email:** swafuvancp@gmail.com
 - **GitHub:** https://github.com/Swafuvan/
- ```bash
-   https://github.com/Swafuvan/Machine-task-Exam
-  ```
+
 
 ---
