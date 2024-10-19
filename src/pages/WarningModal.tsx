@@ -11,10 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { AlertTriangle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface SubmitModalProps {
   unansweredQuestions: number,
-  totalQuestions:number,
+  totalQuestions: number,
   onSubmit: () => void
   onCancel: () => void
 }
@@ -22,12 +23,13 @@ interface SubmitModalProps {
 export default function SubmitModal({ unansweredQuestions, totalQuestions, onSubmit, onCancel }: SubmitModalProps) {
   const [isOpen, setIsOpen] = useState(true)
   const minimumRequired = Math.ceil(totalQuestions * 0.5);
+  const router = useRouter();
 
   const handleSubmit = () => {
-    if(unansweredQuestions < minimumRequired){
+    if (unansweredQuestions < minimumRequired) {
       setIsOpen(false)
-    }else{
       onSubmit()
+      router.push('/result');
     }
   }
 
@@ -47,16 +49,18 @@ export default function SubmitModal({ unansweredQuestions, totalQuestions, onSub
         <DialogDescription className="text-center py-4">
           You have ({unansweredQuestions}) Unanswered Questions,
           <br />
-          Do you want to submit?
+          {`${unansweredQuestions < minimumRequired ? `Do you want to submit?` : `Sorry you want to complete atleast 50%`}`}
         </DialogDescription>
         <DialogFooter className="sm:justify-center">
-          <Button
-            type="submit"
-            className="bg-black text-white hover:bg-gray-800"
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
+          {unansweredQuestions < minimumRequired && (
+            <Button
+              type="submit"
+              className="bg-black text-white hover:bg-gray-800"
+              onClick={handleSubmit}
+            >
+              Submit
+            </Button>
+          )}
           <Button
             type="button"
             variant="ghost"

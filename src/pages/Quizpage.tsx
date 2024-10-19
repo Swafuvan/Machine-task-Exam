@@ -85,7 +85,7 @@ export default function ExamQuestionPage() {
       const savedSelectedAnswer = JSON.parse(localStorage.getItem('selectedAnswer') as string);
       const savedFlaggedQuestions = JSON.parse(localStorage.getItem('flaggedQuestions') as string);
       const savedCurrentQuestionIndex = JSON.parse(localStorage.getItem('currentQuestionIndex') as string);
-
+      console.log(savedSelectedAnswer)
       setSelectedAnswer(savedSelectedAnswer);
       setFlaggedQuestions(savedFlaggedQuestions);
       setCurrentQuestionIndex(savedCurrentQuestionIndex);
@@ -142,6 +142,7 @@ export default function ExamQuestionPage() {
 
   const handleAnswerSelect = () => {
     checkAnswers()
+    setIsModalVisible(true)
     console.log("Selected Answer:", selectedAnswer);
   };
 
@@ -197,6 +198,11 @@ export default function ExamQuestionPage() {
       }
     }
   }
+
+  const handleQuestionClick = (index: number) => {
+    setCurrentQuestionIndex(index);
+    localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex)); // Save the current index to localStorage
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -265,7 +271,7 @@ export default function ExamQuestionPage() {
           </div>
           {/* Tabs */}
           <div className="border-b">
-            <nav className="-mb-px flex space-x-8 px-4 sm:px-6 lg:px-8">
+            <nav className="-mb-px flex space-x-6 px-4 sm:px-6 lg:px-8">
               <Button variant="link" className="text-orange-500 border-b-2 border-orange-500 pb-2">Exam</Button>
               <Button variant="link">Lorem</Button>
               <Button variant="link">Lorem</Button>
@@ -275,15 +281,15 @@ export default function ExamQuestionPage() {
         </header>
 
         {/* Question area */}
-        <main className="flex-1 overflow-y-auto p-4">
+        <main className="flex-1 overflow-y-auto p-2">
           <div className="max-w-7xl mx-auto grid gap-4 md:grid-cols-3 lg:grid-cols-4">
             {/* Overview column */}
             <Card className="md:col-span-1">
               <CardContent className="p-4">
                 <h2 className="font-bold mb-2">Overview</h2>
-                <div className="grid grid-cols-7 gap-1">
+                <div className="grid grid-cols-5 gap-1">
                   {Questions.map((_, i) => (
-                    <div key={i} className={`cursor-pointer w-6 h-6 flex items-center justify-center text-sm ${getQuestionClasses(i)} rounded-full`}>
+                    <div onClick={()=>handleQuestionClick(i)} key={i} className={`cursor-pointer w-6 h-6 flex items-center justify-center text-sm ${getQuestionClasses(i)} rounded-full`}>
                       {i + 1}
                     </div>
                   ))}
@@ -292,10 +298,10 @@ export default function ExamQuestionPage() {
             </Card>
 
             {/* Question column */}
-            <Card className="w-full md:col-span-1 lg:col-span-3">
+            <Card className="w-full md:col-span-2 lg:col-span-3">
               {isModalVisible && <SubmitModal totalQuestions={Questions?.length} unansweredQuestions={unAnswerQuestion} onSubmit={onSubmit} onCancel={onCancel} />}
-              <CardContent className="p-4 md:p-6">
-                <div className="flex justify-between items-center  mb-4">
+              <CardContent className="sm:p-2 md:p-6">
+                <div className="flex justify-between items-center mb-4">
                   <div>
                     MCQ:
                     <span className='text-orange-500'>{currentQuestionIndex + 1}</span>
@@ -329,7 +335,8 @@ export default function ExamQuestionPage() {
                   <Button onClick={handleAnswerSelect} variant="default">End and Submit</Button>
                   <div className="flex items-center space-x-2">
                     <Button onClick={handlePrevious} className='rounded-full' variant="outline">
-                      <ChevronLeft className="h-4 w-4" /> Previous
+                      <ChevronLeft className="h-4 w-4" /> 
+                      <span className="hidden lg:inline">Previous</span>
                     </Button>
                     <Button
                       onClick={handleFlagQuestion}
@@ -339,7 +346,8 @@ export default function ExamQuestionPage() {
                       Flag <Flag className="ml-1 h-4 w-4" />
                     </Button>
                     <Button onClick={handleNext} className='rounded-full' variant="outline">
-                      Next <ChevronRight className="h-4 w-4" />
+                    <span className="hidden lg:inline">Next</span>
+                      <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>

@@ -10,16 +10,17 @@ import { getQuestions } from '@/source/Data'
 import Image from 'next/image'
 import profileImg from '../app/assets/istockphoto.jpg'
 import { Questions } from '@/types'
+import { useRouter } from 'next/navigation'
 
-interface categoryChart{
-  name:string,
-  value:number
+interface categoryChart {
+  name: string,
+  value: number
 }
 const categories = [
   { name: 'Geography', value: 25 },
   { name: 'Science', value: 20 },
   { name: 'History', value: 24 },
-  { name: 'Mathematics', value: 31},
+  { name: 'Mathematics', value: 31 },
 ]
 
 const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
@@ -28,9 +29,13 @@ export default function AssessmentResults() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [answeredQuestion, setAnsweredQuestion] = useState<Questions[]>([]);
   const [categoryScores, setCategoryScores] = useState<categoryChart[]>([]);
+  const router = useRouter()
 
   useEffect(() => {
     const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
+    if (!answers) {
+      router.push('/')
+    }
     const fetchedQuestions = getQuestions();
     fetchedQuestions.then(questions => {
       const scores = calculateCategoryScores(answers, questions);
@@ -39,34 +44,48 @@ export default function AssessmentResults() {
     });
   }, []);
 
-  const calculateCategoryScores = (answers: any[], questions: Questions[]) => {
+  const calculateCategoryScores = (answers: { [key: string]: string }, questions: Questions[]) => {
+    // Initialize category counts
     const categoryCount = categories.reduce((acc, category) => {
       acc[category.name] = { total: 0, correct: 0 };
       return acc;
     }, {} as { [key: string]: { total: number; correct: number } });
-
-    answers.forEach((answer) => {
-      const question = questions.find((q) => q.id === answer.questionId);
-      if (question) {
+  
+    // Loop through each question and compare with selected answers
+    questions.forEach((question) => {
+      const selectedAnswer = answers[`q${question.id}`]; // Get the answer by question ID
+      console.log(`Selected Answer for q${question.id}:`, selectedAnswer); // Debugging selected answers
+      console.log(`Correct Answer for q${question.id}:`, question.answer.option); // Debugging correct answer
+  
+      if (selectedAnswer) {
         const category = question.category;
+        console.log("Question Category:", category); // Debugging category
+  
         categoryCount[category].total += 1;
-        if (question.answer.option === answer.selectedAnswer) {
+  
+        if (question.answer.option === selectedAnswer) {
           categoryCount[category].correct += 1;
         }
       }
     });
-
+  
+    // Log final category counts
+    console.log("Final Category Counts:", categoryCount);
+  
+    // Map the category results to a percentage score
     return categories.map((category) => {
       const { correct, total } = categoryCount[category.name];
       return {
         name: category.name,
-        value: total > 0 ? (correct / total) * 100 : 0,
+        value: total > 0 ? (correct / total) * 100 : 0, // Calculate percentage
       };
     });
   };
+  
 
   const completedExam = () => {
     localStorage.clear();
+    router.push('/')
   }
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
@@ -146,7 +165,7 @@ export default function AssessmentResults() {
 
           {/* Tabs */}
           <div className="border-b">
-            <nav className="-mb-px flex space-x-8 px-4 sm:px-6 lg:px-8">
+            <nav className="-mb-px flex space-x-6 px-4 sm:px-4 lg:px-8">
               <Button variant="link" className="text-orange-500 border-b-2 border-orange-500">Exam</Button>
               <Button variant="link">Lorem</Button>
               <Button variant="link">Lorem</Button>
@@ -175,27 +194,26 @@ export default function AssessmentResults() {
                       make a global impact.
                     </p>
                   </div>
-                  <div className="md:w-1/2">
-                    <ChartContainer config={{}} className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={categories}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                          >
-                            {categories.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
+                  <div className="sm:w-full md:w-1/2">
+                    <ChartContainer config={{}} className="mr-auto ml-0 h-64">
+
+                      <PieChart>
+                        <Pie
+                          data={categories}
+                          cx="33%"
+                          cy="40%"
+                          labelLine={false}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        >
+                          {categories.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Legend className='ml-0' />
+                      </PieChart>
                     </ChartContainer>
                   </div>
                 </div>
@@ -203,11 +221,11 @@ export default function AssessmentResults() {
               <CardFooter className="flex flex-wrap justify-center gap-2">
                 <Button variant="default">View course details</Button>
                 <Button variant="outline">
-                  <MessageSquare className="mr-2 h-4 w-4" />
+                  <MessageSquare className=" h-4 w-4" />
                   Consult Assistant
                 </Button>
                 <Button variant="outline">
-                  <Copy className="mr-2 h-4 w-4" />
+                  <Copy className=" h-4 w-4" />
                   Copy URL
                 </Button>
                 <Button onClick={completedExam} variant="outline">
