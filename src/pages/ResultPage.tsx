@@ -1,27 +1,73 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts'
 import { ChartContainer } from "@/components/ui/chart"
 import { LayoutDashboard, Search, Inbox, BarChart2, Settings, Menu, MessageSquare, Copy, Bell, Clock } from 'lucide-react'
+import { getQuestions } from '@/source/Data'
 import Image from 'next/image'
 import profileImg from '../app/assets/istockphoto.jpg'
+import { Questions } from '@/types'
 
-
-const data = [
-  { name: 'ACCA', value: 25 },
-  { name: 'CS', value: 16 },
-  { name: 'CA', value: 22.5 },
-  { name: 'CMA USA', value: 16.7 },
-  { name: 'CMA IND', value: 21.5 },
+interface categoryChart{
+  name:string,
+  value:number
+}
+const categories = [
+  { name: 'Geography', value: 25 },
+  { name: 'Science', value: 20 },
+  { name: 'History', value: 24 },
+  { name: 'Mathematics', value: 31},
 ]
 
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
 
 export default function AssessmentResults() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [answeredQuestion, setAnsweredQuestion] = useState<Questions[]>([]);
+  const [categoryScores, setCategoryScores] = useState<categoryChart[]>([]);
+
+  useEffect(() => {
+    const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
+    const fetchedQuestions = getQuestions();
+    fetchedQuestions.then(questions => {
+      const scores = calculateCategoryScores(answers, questions);
+      setCategoryScores(scores);
+      setAnsweredQuestion(answers);
+    });
+  }, []);
+
+  const calculateCategoryScores = (answers: any[], questions: Questions[]) => {
+    const categoryCount = categories.reduce((acc, category) => {
+      acc[category.name] = { total: 0, correct: 0 };
+      return acc;
+    }, {} as { [key: string]: { total: number; correct: number } });
+
+    answers.forEach((answer) => {
+      const question = questions.find((q) => q.id === answer.questionId);
+      if (question) {
+        const category = question.category;
+        categoryCount[category].total += 1;
+        if (question.answer.option === answer.selectedAnswer) {
+          categoryCount[category].correct += 1;
+        }
+      }
+    });
+
+    return categories.map((category) => {
+      const { correct, total } = categoryCount[category.name];
+      return {
+        name: category.name,
+        value: total > 0 ? (correct / total) * 100 : 0,
+      };
+    });
+  };
+
+  const completedExam = () => {
+    localStorage.clear();
+  }
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
 
@@ -134,7 +180,7 @@ export default function AssessmentResults() {
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
-                            data={data}
+                            data={categories}
                             cx="50%"
                             cy="50%"
                             labelLine={false}
@@ -143,7 +189,7 @@ export default function AssessmentResults() {
                             dataKey="value"
                             label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                           >
-                            {data.map((entry, index) => (
+                            {categories.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
@@ -163,6 +209,9 @@ export default function AssessmentResults() {
                 <Button variant="outline">
                   <Copy className="mr-2 h-4 w-4" />
                   Copy URL
+                </Button>
+                <Button onClick={completedExam} variant="outline">
+                  Completed
                 </Button>
               </CardFooter>
             </Card>

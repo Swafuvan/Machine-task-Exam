@@ -10,7 +10,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Venus' },
             { id: 'o4', option: 'Jupiter' },
         ],
-        answer: { id: 'o2', option: 'Mars' }
+        answer: { id: 'o2', option: 'Mars' },
+        category: 'Science',
     },
     {
         id: 'q2',
@@ -21,7 +22,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Canberra' },
             { id: 'o4', option: 'Brisbane' },
         ],
-        answer: { id: 'o3', option: 'Canberra' }
+        answer: { id: 'o3', option: 'Canberra' },
+        category: 'Geography',
     },
     {
         id: 'q3',
@@ -32,7 +34,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Arctic Ocean' },
             { id: 'o4', option: 'Pacific Ocean' },
         ],
-        answer: { id: 'o4', option: 'Pacific Ocean' }
+        answer: { id: 'o4', option: 'Pacific Ocean' },
+        category: 'Geography',
     },
     {
         id: 'q4',
@@ -43,7 +46,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '14' },
             { id: 'o4', option: '16' },
         ],
-        answer: { id: 'o2', option: '12' }
+        answer: { id: 'o2', option: '12' },
+        category: 'Mathematics',
     },
     {
         id: 'q5',
@@ -54,7 +58,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'United Kingdom' },
             { id: 'o4', option: 'Russia' },
         ],
-        answer: { id: 'o2', option: 'Brazil' }
+        answer: { id: 'o2', option: 'Brazil' },
+        category: 'History',
     },
     {
         id: 'q6',
@@ -65,7 +70,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Diamond' },
             { id: 'o4', option: 'Platinum' },
         ],
-        answer: { id: 'o3', option: 'Diamond' }
+        answer: { id: 'o3', option: 'Diamond' },
+        category:'Science'
     },
     {
         id: 'q7',
@@ -76,7 +82,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Leo Tolstoy' },
             { id: 'o4', option: 'Mark Twain' },
         ],
-        answer: { id: 'o2', option: 'William Shakespeare' }
+        answer: { id: 'o2', option: 'William Shakespeare' },
+        category:'History'
     },
     {
         id: 'q8',
@@ -87,7 +94,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'O2' },
             { id: 'o4', option: 'HO' },
         ],
-        answer: { id: 'o1', option: 'H2O' }
+        answer: { id: 'o1', option: 'H2O' },
+        category:'Science'
     },
     {
         id: 'q9',
@@ -98,7 +106,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Lion' },
             { id: 'o4', option: 'Cheetah' },
         ],
-        answer: { id: 'o3', option: 'Lion' }
+        answer: { id: 'o3', option: 'Lion' },
+        category: 'Geography',
     },
     {
         id: 'q10',
@@ -109,7 +118,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '1914' },
             { id: 'o4', option: '1920' },
         ],
-        answer: { id: 'o2', option: '1912' }
+        answer: { id: 'o2', option: '1912' },
+        category: 'History'
     },
     {
         id: 'q11',
@@ -120,7 +130,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '3' },
             { id: 'o4', option: '5' },
         ],
-        answer: { id: 'o2', option: '2' }
+        answer: { id: 'o2', option: '2' },
+        category: 'Mathematics',    
     },
     {
         id: 'q12',
@@ -131,7 +142,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Earth' },
             { id: 'o4', option: 'Mars' },
         ],
-        answer: { id: 'o2', option: 'Mercury' }
+        answer: { id: 'o2', option: 'Mercury' },
+        category: 'Science',
     },
     {
         id: 'q13',
@@ -142,7 +154,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '1947' },
             { id: 'o4', option: '1950' },
         ],
-        answer: { id: 'o2', option: '1945' }
+        answer: { id: 'o2', option: '1945' },
+        category: 'History',
     },
     {
         id: 'q14',
@@ -153,7 +166,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Tokyo' },
             { id: 'o4', option: 'Kyoto' },
         ],
-        answer: { id: 'o3', option: 'Tokyo' }
+        answer: { id: 'o3', option: 'Tokyo' },
+        category: 'Geography',
     },
     {
         id: 'q15',
@@ -164,7 +178,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Ozone' },
             { id: 'o4', option: 'Oxide' },
         ],
-        answer: { id: 'o1', option: 'Oxygen' }
+        answer: { id: 'o1', option: 'Oxygen' },
+        category:'Science'
     },
     {
         id: 'q16',
@@ -175,7 +190,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '6' },
             { id: 'o4', option: '8' },
         ],
-        answer: { id: 'o3', option: '6' }
+        answer: { id: 'o3', option: '6' },
+        category: 'Mathematics',
     },
     {
         id: 'q17',
@@ -186,7 +202,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Yangtze' },
             { id: 'o4', option: 'Mississippi' },
         ],
-        answer: { id: 'o2', option: 'Nile' }
+        answer: { id: 'o2', option: 'Nile' },
+        category:'Geography'
     },
     {
         id: 'q18',
@@ -197,7 +214,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Corundum' },
             { id: 'o4', option: 'Topaz' },
         ],
-        answer: { id: 'o2', option: 'Diamond' }
+        answer: { id: 'o2', option: 'Diamond' },
+        category: 'Science',
     },
     {
         id: 'q19',
@@ -208,7 +226,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'John von Neumann' },
             { id: 'o4', option: 'Thomas Edison' },
         ],
-        answer: { id: 'o2', option: 'Charles Babbage' }
+        answer: { id: 'o2', option: 'Charles Babbage' },
+        category: 'History',
     },
     {
         id: 'q20',
@@ -219,7 +238,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Lungs' },
             { id: 'o4', option: 'Heart' },
         ],
-        answer: { id: 'o1', option: 'Liver' }
+        answer: { id: 'o1', option: 'Liver' },
+        category:'Science'
     },
     {
         id: 'q21',
@@ -230,7 +250,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Yen' },
             { id: 'o4', option: 'Won' },
         ],
-        answer: { id: 'o3', option: 'Yen' }
+        answer: { id: 'o3', option: 'Yen' },
+        category: 'Geography',
     },
     {
         id: 'q22',
@@ -241,7 +262,8 @@ const questions: Questions[] = [
             { id: 'o3', option: '7' },
             { id: 'o4', option: '8' },
         ],
-        answer: { id: 'o3', option: '7' }
+        answer: { id: 'o3', option: '7' },
+        category: 'Geography',
     },
     {
         id: 'q23',
@@ -252,7 +274,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Nikola Tesla' },
             { id: 'o4', option: 'Benjamin Franklin' },
         ],
-        answer: { id: 'o2', option: 'Thomas Edison' }
+        answer: { id: 'o2', option: 'Thomas Edison' },
+        category:'Science'
     },
     {
         id: 'q24',
@@ -263,7 +286,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Russia' },
             { id: 'o4', option: 'United States' },
         ],
-        answer: { id: 'o3', option: 'Russia' }
+        answer: { id: 'o3', option: 'Russia' },
+        category:'Geography'
     },
     {
         id: 'q25',
@@ -274,7 +298,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Nitrogen' },
             { id: 'o4', option: 'Hydrogen' },
         ],
-        answer: { id: 'o2', option: 'Carbon Dioxide' }
+        answer: { id: 'o2', option: 'Carbon Dioxide' },
+        category:'Science'
     },
     {
         id: 'q26',
@@ -285,7 +310,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'East' },
             { id: 'o4', option: 'West' },
         ],
-        answer: { id: 'o3', option: 'East' }
+        answer: { id: 'o3', option: 'East' },
+        category:'Geography'
     },
     {
         id: 'q27',
@@ -296,7 +322,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Jupiter' },
             { id: 'o4', option: 'Mars' },
         ],
-        answer: { id: 'o3', option: 'Jupiter' }
+        answer: { id: 'o3', option: 'Jupiter' },
+        category: 'Science',
     },
     {
         id: 'q28',
@@ -307,7 +334,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Great White Shark' },
             { id: 'o4', option: 'Giraffe' },
         ],
-        answer: { id: 'o2', option: 'Blue Whale' }
+        answer: { id: 'o2', option: 'Blue Whale' },
+        category: 'Science',
     },
     {
         id: 'q29',
@@ -318,7 +346,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Lettuce' },
             { id: 'o4', option: 'Onion' },
         ],
-        answer: { id: 'o1', option: 'Avocado' }
+        answer: { id: 'o1', option: 'Avocado' },
+        category: 'History',
     },
     {
         id: 'q30',
@@ -329,7 +358,8 @@ const questions: Questions[] = [
             { id: 'o3', option: 'Spain' },
             { id: 'o4', option: 'Germany' },
         ],
-        answer: { id: 'o2', option: 'France' }
+        answer: { id: 'o2', option: 'France' },
+        category: 'Geography',
     },
 ];
 

@@ -10,6 +10,8 @@ import { ChevronLeft, ChevronRight, Flag, LayoutDashboard, Search, Inbox, BarCha
 import { Questions, SelectedAnswer } from '@/types'
 import Image from 'next/image'
 import profimeImg from '../app/assets/istockphoto.jpg'
+import { useRouter } from 'next/navigation'
+import SubmitModal from './WarningModal'
 
 export default function ExamQuestionPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<SelectedAnswer>({});
@@ -18,39 +20,18 @@ export default function ExamQuestionPage() {
   const [Questions, setQuestions] = useState<Questions[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [flaggedQuestions, setFlaggedQuestions] = useState<number[]>([])
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [unAnswerQuestion, setUnAnswerQuestion] = useState(0);
+  const router = useRouter()
 
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      const questions = await getQuestions();
-      console.log(questions);
-      setQuestions(questions);
-      const savedSelectedAnswer = JSON.parse(localStorage.getItem('selectedAnswer') || '{}');
-      const savedFlaggedQuestions = JSON.parse(localStorage.getItem('flaggedQuestions') || '[]');
-      const savedCurrentQuestionIndex = JSON.parse(localStorage.getItem('currentQuestionIndex') || '0');
-
-
-      setSelectedAnswer(savedSelectedAnswer);
-      setFlaggedQuestions(savedFlaggedQuestions);
-      setCurrentQuestionIndex(savedCurrentQuestionIndex);
-    }
-    fetchQuestions()
+    fetchQuestions();
   }, []);
 
-  useEffect(() => {
-    console.log(selectedAnswer)
-    localStorage.setItem('selectedAnswer', JSON.stringify(selectedAnswer));
-  }, [selectedAnswer]);
-
-  useEffect(() => {
-    console.log(flaggedQuestions)
-    localStorage.setItem('flaggedQuestions', JSON.stringify(flaggedQuestions));
-  }, [flaggedQuestions]);
-
-  useEffect(() => {
-    console.log(currentQuestionIndex)
-    localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex));
-  }, [currentQuestionIndex]);
+  // useEffect(() => {
+  //     saveToLocalStorage();
+  // }, []);
 
   useEffect(() => {
     const savedTime = localStorage.getItem('timeLeft');
@@ -91,6 +72,36 @@ export default function ExamQuestionPage() {
     return () => clearInterval(timer);
   }, []);
 
+  if (timeLeft === '00:00:01') {
+    router.push('/result')
+  }
+
+  const fetchQuestions = async () => {
+    const questions = await getQuestions();
+    console.log(questions);
+    setQuestions(questions);
+
+    if (typeof window !== undefined) {
+      const savedSelectedAnswer = JSON.parse(localStorage.getItem('selectedAnswer') as string);
+      const savedFlaggedQuestions = JSON.parse(localStorage.getItem('flaggedQuestions') as string);
+      const savedCurrentQuestionIndex = JSON.parse(localStorage.getItem('currentQuestionIndex') as string);
+
+      setSelectedAnswer(savedSelectedAnswer);
+      setFlaggedQuestions(savedFlaggedQuestions);
+      setCurrentQuestionIndex(savedCurrentQuestionIndex);
+      if(!savedSelectedAnswer && !savedFlaggedQuestions ){
+        saveToLocalStorage();
+      }
+    }
+  };
+
+  const saveToLocalStorage = () => {
+      localStorage.setItem('selectedAnswer', JSON.stringify(selectedAnswer));
+      localStorage.setItem('flaggedQuestions', JSON.stringify(flaggedQuestions));
+      localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex));
+    
+  };
+
   if (!Questions.length) return <p className='flex justify-center mt-80 font-bold'>Loading questions...</p>;
 
   const isLessThanFiveMinutes = (time: string) => {
@@ -103,19 +114,21 @@ export default function ExamQuestionPage() {
   const handleNext = () => {
     if (currentQuestionIndex < Questions?.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
+      saveToLocalStorage()
     }
   }
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1)
+      saveToLocalStorage()
     }
   }
 
   const handleSelectAnswer = (questionId: string, selectedOption: string) => {
     setSelectedAnswer((prev) => ({
       ...prev,
-      [questionId]: selectedOption, 
+      [questionId]: selectedOption,
     }));
   };
 
@@ -127,16 +140,34 @@ export default function ExamQuestionPage() {
     )
   }
 
-  const handleSubmit = () => {
-    
+  const handleAnswerSelect = () => {
+    checkAnswers()
+    console.log("Selected Answer:", selectedAnswer);
   };
-  
+
+  const checkAnswers = () => {
+    const totalQuestions = Questions.length;
+    const answeredQuestions = Object.keys(selectedAnswer).length;
+    const percentageAnswered = (answeredQuestions / totalQuestions) * 100;
+    const balaceQuestion = totalQuestions - answeredQuestions
+    console.log(balaceQuestion)
+    setUnAnswerQuestion(balaceQuestion);
+
+    if (answeredQuestions === totalQuestions) {
+      router.push("/result");
+    } else if (percentageAnswered > 50) {
+      setIsModalVisible(true);
+    } else {
+      setIsModalVisible(true);
+      console.log("Less than 50% of the questions have been answered.");
+    }
+  };
 
   const getQuestionClasses = (index: number) => {
-    const isCurrent = currentQuestionIndex === index;  
-    const isAnswered = !!selectedAnswer[Questions[index]?.id];  
-    const isFlagged = flaggedQuestions.includes(index);  
-  
+    const isCurrent = currentQuestionIndex === index;
+    const isAnswered = !!selectedAnswer[Questions[index]?.id];
+    const isFlagged = flaggedQuestions.includes(index);
+
     if (isFlagged) {
       return 'bg-orange-500 text-white';
     }
@@ -148,7 +179,25 @@ export default function ExamQuestionPage() {
     }
     return 'bg-gray-100';
   };
-  
+
+  const onCancel = () => {
+    setIsModalVisible(false);
+  }
+
+  const handleSubmit = () => {
+    router.push('/result');
+  }
+
+  const onSubmit = () => {
+    if (unAnswerQuestion === 0) {
+      const minimumAnswers = Math.ceil(Questions.length * 0.5)
+      console.log(minimumAnswers) 
+      if (minimumAnswers > unAnswerQuestion) {
+        handleSubmit()
+      }
+    }
+  }
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -164,7 +213,7 @@ export default function ExamQuestionPage() {
           <nav className="space-y-2">
             <Button variant="ghost" className="bg-orange-500 hover:bg-orange-400 text-white w-full justify-start">
               <LayoutDashboard className="text-white mr-2 h-4 w-4" />
-              Dashboard 
+              Dashboard
             </Button>
             <Button variant="ghost" className="w-full justify-start">
               <Search className="mr-2 h-4 w-4 text-orange-500" />
@@ -244,10 +293,12 @@ export default function ExamQuestionPage() {
 
             {/* Question column */}
             <Card className="w-full md:col-span-1 lg:col-span-3">
+              {isModalVisible && <SubmitModal totalQuestions={Questions?.length} unansweredQuestions={unAnswerQuestion} onSubmit={onSubmit} onCancel={onCancel} />}
               <CardContent className="p-4 md:p-6">
                 <div className="flex justify-between items-center  mb-4">
                   <div>
-                    MCQ:{currentQuestionIndex + 1}
+                    MCQ:
+                    <span className='text-orange-500'>{currentQuestionIndex + 1}</span>
                   </div>
                   <div className={isLessThanFiveMinutes(timeLeft) ? 'text-red-500 font-bold blink sm:mr-5 md:mr-1' : 'font-bold md:mr-1 mr-5'}>{timeLeft}</div>
                 </div>
@@ -275,7 +326,7 @@ export default function ExamQuestionPage() {
                   </>
                 )}
                 <div className="mt-8 flex justify-between items-center">
-                  <Button onClick={handleSubmit} variant="default">End and Submit</Button>
+                  <Button onClick={handleAnswerSelect} variant="default">End and Submit</Button>
                   <div className="flex items-center space-x-2">
                     <Button onClick={handlePrevious} className='rounded-full' variant="outline">
                       <ChevronLeft className="h-4 w-4" /> Previous

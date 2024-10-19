@@ -2,7 +2,7 @@ import ExamQuestionPage from "@/pages/Quizpage";
 
 export default function Home() {
   return (
-    <div className="">
+    <div >
         <ExamQuestionPage/>
     </div>
   );

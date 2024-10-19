@@ -13,17 +13,22 @@ import {
 import { AlertTriangle } from 'lucide-react'
 
 interface SubmitModalProps {
-  unansweredQuestions: number
+  unansweredQuestions: number,
+  totalQuestions:number,
   onSubmit: () => void
   onCancel: () => void
 }
 
-export default function SubmitModal({ unansweredQuestions, onSubmit, onCancel }: SubmitModalProps) {
+export default function SubmitModal({ unansweredQuestions, totalQuestions, onSubmit, onCancel }: SubmitModalProps) {
   const [isOpen, setIsOpen] = useState(true)
+  const minimumRequired = Math.ceil(totalQuestions * 0.5);
 
   const handleSubmit = () => {
-    setIsOpen(false)
-    onSubmit()
+    if(unansweredQuestions < minimumRequired){
+      setIsOpen(false)
+    }else{
+      onSubmit()
+    }
   }
 
   const handleCancel = () => {

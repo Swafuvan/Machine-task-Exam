@@ -4,8 +4,9 @@ export interface Questions {
     question: string;
     options: Array<{ id: string; option: string }>;
     answer: { id: string, option: string };
+    category: string;
 }
 
-export interface SelectedAnswer{
-    [questionId: string]: string;  
+export interface SelectedAnswer {
+    [questionId: string]: string;
 }
