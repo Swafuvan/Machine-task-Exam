@@ -34,25 +34,20 @@ To set up and run the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone [[repository URL]](https://github.com/Swafuvan/Machine-task-Exam.git)
+   git clone https://github.com/Swafuvan/Machine-task-Exam.git
    ```
 
-2. **Navigate to the project directory:**
-   ```bash
-   cd exam
-   ```
-
-3. **Install the dependencies:**
+2. **Install the dependencies:**
    ```bash
    npm install
    ```
 
-4. **Run the development server:**
+3. **Run the development server:**
    ```bash
    npm run dev
    ```
 
-   The application will be available at `[http://localhost:3000](https://machine-task-exam.vercel.app/)`.
+   The application will be available at `http://localhost:3000/`.
 
 ---
 
@@ -61,7 +56,7 @@ To set up and run the project locally, follow these steps:
 Once the application is running:
 
 1. **Start the Exam:**
-   - Visit `[http://localhost:3000](https://machine-task-exam.vercel.app/)` to start the exam.
+   - Visit `https://machine-task-exam.vercel.app/` to start the exam.
    - Select answers to the questions as you proceed through the exam.
 
 2. **Flag Questions:** 
@@ -93,8 +88,9 @@ The following technologies were used in the development of this project:
 ## Deployment
 
 This project is deployed on **Vercel**. You can access the live version of the application using the following link:
-
-[Live Demo]([https://your-vercel-url.com](https://machine-task-exam.vercel.app/))
+``` bash
+https://machine-task-exam.vercel.app/
+```
 
 ---
 
@@ -103,6 +99,9 @@ This project is deployed on **Vercel**. You can access the live version of the a
 If you have any questions or need further information, feel free to reach out:
 
 - **Email:** swafuvancp@gmail.com
-- **GitHub:** [[your GitHub profile]](https://github.com/Swafuvan/Machine-task-Exam)
+- **GitHub:**
+ ```bash
+   https://github.com/Swafuvan/Machine-task-Exam
+  ```
 
 ---
