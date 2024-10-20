@@ -12,6 +12,8 @@ import Image from 'next/image'
 import profimeImg from '../app/assets/istockphoto.jpg'
 import { useRouter } from 'next/navigation'
 import SubmitModal from './WarningModal'
+import Logo from '@/app/assets/ELT-Logo.png'
+
 
 export default function ExamQuestionPage() {
   const [selectedAnswer, setSelectedAnswer] = useState<SelectedAnswer>({});
@@ -89,17 +91,17 @@ export default function ExamQuestionPage() {
       setSelectedAnswer(savedSelectedAnswer);
       setFlaggedQuestions(savedFlaggedQuestions);
       setCurrentQuestionIndex(savedCurrentQuestionIndex);
-      if(!savedSelectedAnswer && !savedFlaggedQuestions ){
+      if (!savedSelectedAnswer && !savedFlaggedQuestions) {
         saveToLocalStorage();
       }
     }
   };
 
   const saveToLocalStorage = () => {
-      localStorage.setItem('selectedAnswer', JSON.stringify(selectedAnswer));
-      localStorage.setItem('flaggedQuestions', JSON.stringify(flaggedQuestions));
-      localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex));
-    
+    localStorage.setItem('selectedAnswer', JSON.stringify(selectedAnswer));
+    localStorage.setItem('flaggedQuestions', JSON.stringify(flaggedQuestions));
+    localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex));
+
   };
 
   if (!Questions.length) return <p className='flex justify-center mt-80 font-bold'>Loading questions...</p>;
@@ -192,7 +194,7 @@ export default function ExamQuestionPage() {
   const onSubmit = () => {
     if (unAnswerQuestion === 0) {
       const minimumAnswers = Math.ceil(Questions.length * 0.5)
-      console.log(minimumAnswers) 
+      console.log(minimumAnswers)
       if (minimumAnswers > unAnswerQuestion) {
         handleSubmit()
       }
@@ -209,7 +211,16 @@ export default function ExamQuestionPage() {
       {/* Sidebar */}
       <div className={`bg-white w-64 fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 ease-in-out md:relative md:translate-x-0 z-30`}>
         <div className="flex items-center justify-between p-4 border-b">
-          <div className="text-xl font-bold">ELT Global</div>
+          <div className="flex items-center space-x-2">
+            <Image
+              src={Logo}
+              alt="ELT Global Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
+            <div className="text-xl font-bold">ELT Global</div>
+          </div>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
             <Menu className="h-6 w-6" />
           </Button>
@@ -273,9 +284,9 @@ export default function ExamQuestionPage() {
           <div className="border-b">
             <nav className="-mb-px flex space-x-6 px-4 sm:px-6 lg:px-8">
               <Button variant="link" className="text-orange-500 border-b-2 border-orange-500 pb-2">Exam</Button>
-              <Button variant="link">option1</Button>
-              <Button variant="link">option2</Button>
-              <Button variant="link">option3</Button>
+              <Button variant="link">section1</Button>
+              <Button variant="link">section2</Button>
+              <Button variant="link">section3</Button>
             </nav>
           </div>
         </header>
@@ -289,7 +300,7 @@ export default function ExamQuestionPage() {
                 <h2 className="font-bold mb-2">Overview</h2>
                 <div className="grid grid-cols-5 gap-1">
                   {Questions.map((_, i) => (
-                    <div onClick={()=>handleQuestionClick(i)} key={i} className={`cursor-pointer w-6 h-6 flex items-center justify-center text-sm ${getQuestionClasses(i)} rounded-full`}>
+                    <div onClick={() => handleQuestionClick(i)} key={i} className={`cursor-pointer w-6 h-6 flex items-center justify-center text-sm ${getQuestionClasses(i)} rounded-full`}>
                       {i + 1}
                     </div>
                   ))}
@@ -335,7 +346,7 @@ export default function ExamQuestionPage() {
                   <Button onClick={handleAnswerSelect} variant="default">End and Submit</Button>
                   <div className="flex items-center space-x-2">
                     <Button onClick={handlePrevious} className='rounded-full' variant="outline">
-                      <ChevronLeft className="h-4 w-4" /> 
+                      <ChevronLeft className="h-4 w-4" />
                       <span className="hidden lg:inline">Previous</span>
                     </Button>
                     <Button
@@ -346,7 +357,7 @@ export default function ExamQuestionPage() {
                       Flag <Flag className="ml-1 h-4 w-4" />
                     </Button>
                     <Button onClick={handleNext} className='rounded-full' variant="outline">
-                    <span className="hidden lg:inline">Next</span>
+                      <span className="hidden lg:inline">Next</span>
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>

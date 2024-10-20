@@ -11,6 +11,7 @@ import Image from 'next/image'
 import profileImg from '../app/assets/istockphoto.jpg'
 import { categoryChart, Questions } from '@/types'
 import { useRouter } from 'next/navigation'
+import Logo from '@/app/assets/ELT-Logo.png'
 
 
 const categories = [
@@ -24,14 +25,14 @@ const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
 
 export default function AssessmentResults() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [chartResult,setChartResult] = useState<categoryChart[]>([]);
+  const [chartResult, setChartResult] = useState<categoryChart[]>([]);
   const router = useRouter()
 
   useEffect(() => {
     const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
     console.log(answers)
     if (Object.keys(answers).length === 0) {
-      router.push('/'); 
+      router.push('/');
       return;
     }
     const fetchedQuestions = getQuestions();
@@ -51,12 +52,12 @@ export default function AssessmentResults() {
     ];
 
 
-    for(const data in answers){
+    for (const data in answers) {
       const question = questions.find(q => q.id === data);
-      if(question?.answer.option === answers[data] ){
+      if (question?.answer.option === answers[data]) {
         const data = chartResult.find((item) => item.name === question.category)
-        if(data){
-          data.value +=1
+        if (data) {
+          data.value += 1
         }
       }
     }
@@ -77,7 +78,16 @@ export default function AssessmentResults() {
       {/* Sidebar for desktop */}
       <div className={`bg-white w-64 fixed inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 ease-in-out md:relative md:translate-x-0 z-30`}>
         <div className="flex items-center justify-between p-4 border-b">
-          <div className="text-xl font-bold">ELT Global</div>
+          <div className="flex items-center space-x-2">
+            <Image
+              src={Logo}
+              alt="ELT Global Logo"
+              width={32}
+              height={32}
+              className="h-8 w-8"
+            />
+            <div className="text-xl font-bold">ELT Global</div>
+          </div>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
             <Menu className="h-6 w-6" />
           </Button>
@@ -149,9 +159,9 @@ export default function AssessmentResults() {
           <div className="border-b">
             <nav className="-mb-px flex space-x-6 px-4 sm:px-4 lg:px-8">
               <Button variant="link" className="text-orange-500 border-b-2 border-orange-500">Exam</Button>
-              <Button variant="link">Lorem</Button>
-              <Button variant="link">Lorem</Button>
-              <Button variant="link">Lorem</Button>
+              <Button variant="link">section1</Button>
+              <Button variant="link">section2</Button>
+              <Button variant="link">section3</Button>
             </nav>
           </div>
         </header>
