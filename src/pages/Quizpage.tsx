@@ -37,13 +37,10 @@ export default function ExamQuestionPage() {
 
   useEffect(() => {
     const savedTime = localStorage.getItem('timeLeft');
-
-    if (savedTime) {
-      setTimeLeft(savedTime);
-    }
+    if (savedTime) setTimeLeft(savedTime);
 
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
+      setTimeLeft(prev => {
         const [hours, minutes, seconds] = prev.split(':').map(Number);
         let newSeconds = seconds - 1;
         let newMinutes = minutes;
@@ -64,15 +61,14 @@ export default function ExamQuestionPage() {
         }
 
         const newTime = `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}:${String(newSeconds).padStart(2, '0')}`;
-
         localStorage.setItem('timeLeft', newTime);
-
         return newTime;
       });
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
+
 
   if (timeLeft === '00:00:01') {
     router.push('/result')
@@ -83,17 +79,17 @@ export default function ExamQuestionPage() {
     console.log(questions);
     setQuestions(questions);
 
-      const savedSelectedAnswer = JSON.parse(localStorage.getItem('selectedAnswer') as string);
-      const savedFlaggedQuestions = JSON.parse(localStorage.getItem('flaggedQuestions') as string);
-      const savedCurrentQuestionIndex = JSON.parse(localStorage.getItem('currentQuestionIndex') as string);
-      console.log(savedSelectedAnswer)
-      setSelectedAnswer(savedSelectedAnswer);
-      setFlaggedQuestions(savedFlaggedQuestions);
-      setCurrentQuestionIndex(savedCurrentQuestionIndex);
-      if (!savedSelectedAnswer && !savedFlaggedQuestions) {
-        saveToLocalStorage();
-      }
-    
+    const savedSelectedAnswer = localStorage.getItem('selectedAnswer') ? JSON.parse(localStorage.getItem('selectedAnswer') as string) : {};
+    const savedFlaggedQuestions = localStorage.getItem('flaggedQuestions') ? JSON.parse(localStorage.getItem('flaggedQuestions') as string) : [];
+    const savedCurrentQuestionIndex = localStorage.getItem('currentQuestionIndex') ? JSON.parse(localStorage.getItem('currentQuestionIndex') as string) : 0;
+    console.log(savedSelectedAnswer)
+    setSelectedAnswer(savedSelectedAnswer);
+    setFlaggedQuestions(savedFlaggedQuestions);
+    setCurrentQuestionIndex(savedCurrentQuestionIndex);
+    if (!savedSelectedAnswer && !savedFlaggedQuestions) {
+      saveToLocalStorage();
+    }
+
   };
 
   const saveToLocalStorage = () => {
@@ -103,8 +99,10 @@ export default function ExamQuestionPage() {
 
   };
 
-  if (!Questions.length) return <p className='flex justify-center mt-80 font-bold'>Loading questions...</p>;
-
+  if (Questions.length === 0) {
+    return <p className='flex justify-center mt-80 font-bold'>Loading questions...</p>;
+  }
+  
   const isLessThanFiveMinutes = (time: string) => {
     const [hours, minutes, seconds] = time.split(':').map(Number);
     return hours === 0 && minutes < 5;
@@ -167,7 +165,7 @@ export default function ExamQuestionPage() {
 
   const getQuestionClasses = (index: number) => {
     const isCurrent = currentQuestionIndex === index;
-    const isAnswered = selectedAnswer[Questions[index]?.id];
+    const isAnswered = selectedAnswer[Questions[index]?.id] || false;
     const isFlagged = flaggedQuestions.includes(index);
 
     if (isFlagged) {
@@ -202,8 +200,11 @@ export default function ExamQuestionPage() {
 
   const handleQuestionClick = (index: number) => {
     setCurrentQuestionIndex(index);
-    localStorage.setItem('currentQuestionIndex', JSON.stringify(currentQuestionIndex)); // Save the current index to localStorage
+    setTimeout(() => {
+      localStorage.setItem('currentQuestionIndex', JSON.stringify(index));
+    }, 0);
   };
+
 
   return (
     <div className="flex h-screen bg-gray-100">
