@@ -83,7 +83,6 @@ export default function ExamQuestionPage() {
     console.log(questions);
     setQuestions(questions);
 
-    if (typeof window !== undefined) {
       const savedSelectedAnswer = JSON.parse(localStorage.getItem('selectedAnswer') as string);
       const savedFlaggedQuestions = JSON.parse(localStorage.getItem('flaggedQuestions') as string);
       const savedCurrentQuestionIndex = JSON.parse(localStorage.getItem('currentQuestionIndex') as string);
@@ -94,7 +93,7 @@ export default function ExamQuestionPage() {
       if (!savedSelectedAnswer && !savedFlaggedQuestions) {
         saveToLocalStorage();
       }
-    }
+    
   };
 
   const saveToLocalStorage = () => {
@@ -168,7 +167,7 @@ export default function ExamQuestionPage() {
 
   const getQuestionClasses = (index: number) => {
     const isCurrent = currentQuestionIndex === index;
-    const isAnswered = !!selectedAnswer[Questions[index]?.id];
+    const isAnswered = selectedAnswer[Questions[index]?.id];
     const isFlagged = flaggedQuestions.includes(index);
 
     if (isFlagged) {

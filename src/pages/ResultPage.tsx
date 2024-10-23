@@ -14,29 +14,25 @@ import { useRouter } from 'next/navigation'
 import Logo from '@/app/assets/ELT-Logo.png'
 
 
-const categories = [
-  { name: 'Geography', value: 25 },
-  { name: 'Science', value: 20 },
-  { name: 'History', value: 24 },
-  { name: 'Mathematics', value: 31 },
-]
-
 const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
 
 export default function AssessmentResults() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [allQuestions,setAllQuestions] = useState<Questions[]>([])
   const [chartResult, setChartResult] = useState<categoryChart[]>([]);
   const router = useRouter()
 
   useEffect(() => {
     const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
-    console.log(answers)
-    if (Object.keys(answers).length === 0) {
+    const minimum = Math.ceil(allQuestions.length / 2)
+    console.log(answers, minimum)
+    if (Object.keys(answers).length < 14) {
       router.push('/');
       return;
     }
     const fetchedQuestions = getQuestions();
     fetchedQuestions.then(questions => {
+      setAllQuestions(questions);
       const scores = calculateCategoryScores(answers, questions);
       setChartResult(scores)
     });
