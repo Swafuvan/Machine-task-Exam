@@ -219,7 +219,7 @@ export default function ExamQuestionPage() {
               height={32}
               className="h-8 w-8"
             />
-            <div className="text-xl font-bold">ELT Global</div>
+            <div className="text-xl font-bold">Global Exam</div>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
             <Menu className="h-6 w-6" />

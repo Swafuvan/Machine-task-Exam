@@ -14,18 +14,39 @@ import { useRouter } from 'next/navigation'
 import Logo from '@/app/assets/ELT-Logo.png'
 
 
-const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',]
+const COLORS = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
+
+const CATEGORY_TO_FIELD_MAP = {
+  Geography: {
+    title: "Geographer",
+    description: "Geographers analyze the Earth, its physical features, and human impact on the environment.",
+  },
+  Science: {
+    title: "Scientist",
+    description: "Scientists conduct experiments and research to understand the natural world.",
+  },
+  History: {
+    title: "Historian",
+    description: "Historians study and interpret past events and their impact on the present and future.",
+  },
+  Mathematics: {
+    title: "Mathematician",
+    description: "Mathematicians solve problems and develop theories using mathematical principles.",
+  },
+};
+
 
 export default function AssessmentResults() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [allQuestions,setAllQuestions] = useState<Questions[]>([])
+  const [allQuestions, setAllQuestions] = useState<Questions[]>([])
   const [chartResult, setChartResult] = useState<categoryChart[]>([]);
+  const [topCategory, setTopCategory] = useState<{ name: string; value: number } | null>(null);
+
   const router = useRouter()
 
   useEffect(() => {
     const answers = JSON.parse(localStorage.getItem('selectedAnswer') || '[]');
-    const minimum = Math.ceil(allQuestions.length / 2)
-    console.log(answers, minimum)
+    const minimum = Math.ceil(allQuestions.length / 2);
     if (Object.keys(answers).length < 14) {
       router.push('/');
       return;
@@ -33,13 +54,14 @@ export default function AssessmentResults() {
     const fetchedQuestions = getQuestions();
     fetchedQuestions.then(questions => {
       setAllQuestions(questions);
-      const scores = calculateCategoryScores(answers, questions);
-      setChartResult(scores)
+      const { chartResult, topCategory } = calculateCategoryScores(answers, questions);
+      setChartResult(chartResult);
+      setTopCategory(topCategory); // Store the top category in state
     });
   }, []);
 
-  const calculateCategoryScores = (answers: { [key: string]: string }, questions: Questions[]) => {
 
+  const calculateCategoryScores = (answers: { [key: string]: string }, questions: Questions[]) => {
     const chartResult = [
       { name: 'Geography', value: 0 },
       { name: 'Science', value: 0 },
@@ -51,15 +73,20 @@ export default function AssessmentResults() {
     for (const data in answers) {
       const question = questions.find(q => q.id === data);
       if (question?.answer.option === answers[data]) {
-        const data = chartResult.find((item) => item.name === question.category)
-        if (data) {
-          data.value += 1
+        const categoryData = chartResult.find((item) => item.name === question.category);
+        if (categoryData) {
+          categoryData.value += 1;
         }
       }
     }
-    return chartResult
 
+    // Find the category with the highest score
+    const topCategory = chartResult.reduce((prev, current) =>
+      current.value > prev.value ? current : prev, chartResult[0]);
+
+    return { chartResult, topCategory };
   };
+
 
 
   const completedExam = () => {
@@ -68,6 +95,10 @@ export default function AssessmentResults() {
   }
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen)
+
+  const isValidCategory = (name: string): name is keyof typeof CATEGORY_TO_FIELD_MAP => {
+    return name in CATEGORY_TO_FIELD_MAP;
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -82,7 +113,7 @@ export default function AssessmentResults() {
               height={32}
               className="h-8 w-8"
             />
-            <div className="text-xl font-bold">ELT Global</div>
+            <div className="text-xl font-bold">Global Exam</div>
           </div>
           <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
             <Menu className="h-6 w-6" />
@@ -172,16 +203,23 @@ export default function AssessmentResults() {
                 <div className="md:flex">
                   <div className="md:w-1/2 mb-4 md:mb-0">
                     <h3 className="text-lg font-semibold mb-2">You are most suitable for</h3>
-                    <h4 className="text-xl font-bold mb-2">
-                      Association of Chartered Certified Accountant <span className="text-orange-500">(ACCA)</span>
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Association of Chartered Certified Accountants are professionals who are responsible for the financial
-                      management of companies, financial reporting, auditing, taxation, and other financial aspects of business. They
-                      have a global recognition and are highly sought after in the finance industry for their expertise. Join this elite group and
-                      make a global impact.
-                    </p>
+                    {topCategory && isValidCategory(topCategory.name) ? (
+                      <>
+                        <h4 className="text-xl font-bold mb-2">
+                          {CATEGORY_TO_FIELD_MAP[topCategory.name].title}
+                          <span className="text-orange-500"> ({topCategory.name})</span>
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-4">
+                          {CATEGORY_TO_FIELD_MAP[topCategory.name].description}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-sm text-gray-600 mb-4">
+                        No specific field recommendation could be determined based on your answers.
+                      </p>
+                    )}
                   </div>
+
                   <div className="sm:w-full md:w-1/2">
                     <ChartContainer config={{}} className="mr-auto ml-0 h-64">
 
